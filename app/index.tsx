@@ -1,7 +1,9 @@
-import { ScrollView, View, Text } from "react-native";
+import { Pressable, ScrollView, View, Text } from "react-native";
 import DateInput from "@/components/DateInput";
 import RoomList from "@/components/RoomList";
 import { useState } from "react";
+import SortingModal from "@/components/SortingModal";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 
 import "../global.css";
 

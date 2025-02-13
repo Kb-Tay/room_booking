@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { ScrollView, View, Text, Pressable } from "react-native";
 import { useQuery } from "@tanstack/react-query";
 import { RoomModel } from "@/model/roomModel";
 import RoomCard from "./RoomCard";
+import SortingModal from "./SortingModal";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 
 export default function RoomList({ dateTime }: { dateTime: Date }) {
@@ -15,6 +16,8 @@ export default function RoomList({ dateTime }: { dateTime: Date }) {
       return response.json();
     },
   });
+
+  const [modalVisible, setModalVisible] = useState(false);
 
   const isWithinTime = (dateTime: Date): boolean => {
     // filter time such that it falls within the range of the room's availability
@@ -31,25 +34,30 @@ export default function RoomList({ dateTime }: { dateTime: Date }) {
   };
 
   return (
-    <View className="py-10">
-      <View className="flex flex-row justify-between">
+    <View>
+      <View className="flex flex-row justify-between pt-10">
         <Text className="text-slate-400">Rooms</Text>
-        <Pressable className="flex flex-row items-center gap-x-2">
+        <Pressable
+          className="flex flex-row items-center gap-x-2"
+          onPress={() => setModalVisible(true)}
+        >
           <Text className="font-bold">Sort</Text>
           <MaterialCommunityIcons name="sort-variant" size={24} color="black" />
         </Pressable>
       </View>
-      <ScrollView>
-        <View className="gap-y-2 p-2">
-          {isWithinTime(dateTime) ? (
-            data?.map((room, i) => (
-              <RoomCard room={room} dateTime={dateTime} key={i} />
-            ))
-          ) : (
-            <Text className="font-bold">No Available Rooms</Text>
-          )}
-        </View>
-      </ScrollView>
+      <View className="gap-y-2 p-2">
+        {isWithinTime(dateTime) ? (
+          data?.map((room, i) => (
+            <RoomCard room={room} dateTime={dateTime} key={i} />
+          ))
+        ) : (
+          <Text className="font-bold">No Available Rooms</Text>
+        )}
+      </View>
+      <SortingModal
+        modalVisible={modalVisible}
+        onClose={() => setModalVisible(false)}
+      />
     </View>
   );
 }
