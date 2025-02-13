@@ -1,19 +1,36 @@
-import React, { useState } from "react";
-import { View, Text, TouchableOpacity, Dimensions } from "react-native";
+import React, { SetStateAction, useState, Dispatch } from "react";
+import { View, Text, TouchableOpacity } from "react-native";
 import Modal from "react-native-modal";
+import { Button } from "./common/Button";
+import { Radio } from "./common/Radio";
+import { RoomFilters } from "@/model/roomModel";
+import { set } from "date-fns";
 
-import { SafeAreaView } from "react-native-safe-area-context";
-import { Button } from "./Button";
+interface SortingModalProps {
+  modalVisible: boolean;
+  onClose: () => void;
+  sort: RoomFilters[];
+  handleSetSort: (filters: RoomFilters[]) => void;
+}
 
 export default function SortingModal({
   modalVisible,
   onClose,
-}: {
-  modalVisible: boolean;
-  onClose: () => void;
-}) {
-  const { height } = Dimensions.get("window");
-  const filters = ["Location", "Capacity", "Availability"];
+  sort,
+  handleSetSort,
+}: SortingModalProps) {
+  const [selectedFilter, setSelectedFilter] = useState<RoomFilters[]>([]);
+  const filterOptions = Object.values(RoomFilters).filter(
+    (item) => item !== RoomFilters.Level
+  );
+
+  const handleFilter = (filter: RoomFilters) => {
+    if (selectedFilter.includes(filter)) {
+      setSelectedFilter(selectedFilter.filter((item) => item !== filter));
+    } else {
+      setSelectedFilter([...selectedFilter, filter]);
+    }
+  };
 
   return (
     <Modal
@@ -24,6 +41,13 @@ export default function SortingModal({
       animationIn="slideInUp"
       animationOut="slideOutDown"
       style={{ margin: 0, justifyContent: "flex-end" }}
+      onDismiss={() => {
+        setSelectedFilter([]);
+      }}
+      onShow={() => {
+        const prevFilters = sort.filter((item) => item !== RoomFilters.Level);
+        setSelectedFilter([...prevFilters]);
+      }}
     >
       <View className="bg-white rounded-t-2xl p-4 h-1/2">
         <View className="flex-grow">
@@ -33,13 +57,14 @@ export default function SortingModal({
           <Text className="text-lg font-semibold text-center mb-4">Sort</Text>
 
           {/* Sorting Options */}
-          {filters.map((item, index) => (
+          {filterOptions.map((item, index) => (
             <TouchableOpacity
               key={index}
               className="flex-row items-center justify-between py-2 px-4"
+              onPress={() => handleFilter(item)}
             >
               <Text className="text-base">{item}</Text>
-              <View className="w-5 h-5 border border-gray-400 rounded-full" />
+              <Radio isChecked={selectedFilter.includes(item)} />
             </TouchableOpacity>
           ))}
         </View>
@@ -49,12 +74,17 @@ export default function SortingModal({
           <Button
             text={"Reset"}
             className="bg-gray-700 w-1/3 h-14"
-            onClick={() => {}}
+            onPress={() => {
+              handleSetSort([]);
+              setSelectedFilter([]);
+            }}
           />
           <Button
             text={"Apply"}
             className="bg-blue-600 w-2/3 h-14"
-            onClick={() => {}}
+            onPress={() => {
+              handleSetSort([...selectedFilter]);
+            }}
           />
         </View>
       </View>

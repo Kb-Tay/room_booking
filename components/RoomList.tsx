@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import { ScrollView, View, Text, Pressable } from "react-native";
 import { useQuery } from "@tanstack/react-query";
-import { RoomModel } from "@/model/roomModel";
+import { RoomFilters, RoomModel } from "@/model/roomModel";
 import RoomCard from "./RoomCard";
 import SortingModal from "./SortingModal";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import { format } from "date-fns";
 
 export default function RoomList({ dateTime }: { dateTime: Date }) {
-  const { data, error } = useQuery<RoomModel[]>({
+  const { data = [], error } = useQuery<RoomModel[]>({
     queryKey: ["todos"],
     queryFn: async () => {
       const response = await fetch(
@@ -18,10 +19,12 @@ export default function RoomList({ dateTime }: { dateTime: Date }) {
   });
 
   const [modalVisible, setModalVisible] = useState(false);
+  const [sort, setSort] = useState<RoomFilters[]>([RoomFilters.Level]);
+
+  const timeSelected = format(dateTime, "HH:mm");
 
   const isWithinTime = (dateTime: Date): boolean => {
     // filter time such that it falls within the range of the room's availability
-    console.log(dateTime.getHours());
     if (dateTime.getHours() < 8 || dateTime.getHours() > 19) {
       return false;
     }
@@ -31,6 +34,34 @@ export default function RoomList({ dateTime }: { dateTime: Date }) {
     }
 
     return true;
+  };
+
+  const handleSetSort = (filters: RoomFilters[]) => {
+    setSort([...filters, RoomFilters.Level]);
+  };
+
+  const sortRooms = (rooms: RoomModel[], sort: RoomFilters[]): RoomModel[] => {
+    // write a function that sorts by filter 1, then filter 2, then filter 3
+    rooms.sort((a, b) => {
+      for (const filter of sort) {
+        let comparison = 0;
+
+        if (filter === RoomFilters.Capacity) {
+          comparison = b.capacity - a.capacity;
+        } else if (filter === RoomFilters.Availability) {
+          comparison =
+            parseInt(b.availability[timeSelected], 10) -
+            parseInt(a.availability[timeSelected], 10);
+        } else if (filter === RoomFilters.Level) {
+          comparison = a.level - b.level;
+        }
+
+        if (comparison !== 0) return comparison; // Move to the next filter only if equal
+      }
+      return 0;
+    });
+
+    return rooms;
   };
 
   return (
@@ -47,7 +78,7 @@ export default function RoomList({ dateTime }: { dateTime: Date }) {
       </View>
       <View className="gap-y-2 p-2">
         {isWithinTime(dateTime) ? (
-          data?.map((room, i) => (
+          sortRooms(data, sort).map((room, i) => (
             <RoomCard room={room} dateTime={dateTime} key={i} />
           ))
         ) : (
@@ -57,6 +88,8 @@ export default function RoomList({ dateTime }: { dateTime: Date }) {
       <SortingModal
         modalVisible={modalVisible}
         onClose={() => setModalVisible(false)}
+        sort={sort}
+        handleSetSort={handleSetSort}
       />
     </View>
   );
