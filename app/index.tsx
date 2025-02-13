@@ -1,21 +1,20 @@
-import { View, Text } from "react-native";
-import { StyleSheet } from "react-native";
-import "../global.css";
-import { ScrollView, TextInput } from "react-native-gesture-handler";
+import { ScrollView, View, Text } from "react-native";
 import DateInput from "@/components/DateInput";
+import RoomList from "@/components/RoomList";
+import { useState } from "react";
+
+import "../global.css";
 
 export default function Index() {
+  const [dateTime, setDateTime] = useState(new Date());
+
   return (
-    <ScrollView>
-      <View className="">
-        <Text className="text-slate-400">Date</Text>
-        <DateInput />
+    <ScrollView className="px-6 py-2 bg-white">
+      <View className="gap-y-4">
+        <DateInput type="date" dateTime={dateTime} setDateTime={setDateTime} />
+        <DateInput type="time" dateTime={dateTime} setDateTime={setDateTime} />
       </View>
-      <View>
-        <Text className="text-red-600">
-          Edit app/index.tsx to edit this screen.
-        </Text>
-      </View>
+      <RoomList dateTime={dateTime} />
     </ScrollView>
   );
 }
