@@ -21,18 +21,4 @@ describe("SortingModal", () => {
     expect(getByText("Availability")).toBeTruthy();
     expect(queryByText("Level")).toBeFalsy();
   });
-
-  // test("Test filter selection", () => {
-  //   const { getByTestId } = render(
-  //     <SortingModal
-  //       modalVisible={true}
-  //       onClose={jest.fn()}
-  //       sort={SORT_DATA}
-  //       handleSetSort={jest.fn()}
-  //     />
-  //   );
-
-  //   const capacity = getByTestId(RoomFilters.Capacity);
-  //   expect(capacity).toBeTruthy();
-  // });
 });
