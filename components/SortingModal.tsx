@@ -21,7 +21,7 @@ export default function SortingModal({
 }: SortingModalProps) {
   const [selectedFilter, setSelectedFilter] = useState<RoomFilters[]>([]);
   const filterOptions = Object.values(RoomFilters).filter(
-    (item) => item !== RoomFilters.Level
+    (k) => k !== RoomFilters.Level
   );
 
   const handleFilter = (filter: RoomFilters) => {
@@ -64,7 +64,10 @@ export default function SortingModal({
               onPress={() => handleFilter(item)}
             >
               <Text className="text-base">{item}</Text>
-              <Radio isChecked={selectedFilter.includes(item)} />
+              <Radio
+                isChecked={selectedFilter.includes(item)}
+                key={RoomFilters[item]}
+              />
             </TouchableOpacity>
           ))}
         </View>

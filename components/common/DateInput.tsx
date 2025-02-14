@@ -50,10 +50,13 @@ export default function DateInput({
 
   return (
     <View className="gap-y-2">
-      <Text className="text-slate-400 capitalize">{type}</Text>
+      <Text className="text-slate-400 capitalize" testID="type">
+        {type}
+      </Text>
       <Text
         onPress={() => setShow(true)}
         className="w-full border-b border-slate-300 pb-2"
+        testID="dt"
       >
         {formatDate(dateTime, type)}
       </Text>

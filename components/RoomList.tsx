@@ -6,17 +6,10 @@ import RoomCard from "./RoomCard";
 import SortingModal from "./SortingModal";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { format } from "date-fns";
+import useRoomsQuery from "@/queries/useRoomsQuery";
 
 export default function RoomList({ dateTime }: { dateTime: Date }) {
-  const { data = [], error } = useQuery<RoomModel[]>({
-    queryKey: ["todos"],
-    queryFn: async () => {
-      const response = await fetch(
-        "https://gist.githubusercontent.com/yuhong90/7ff8d4ebad6f759fcc10cc6abdda85cf/raw/463627e7d2c7ac31070ef409d29ed3439f7406f6/room-availability.json"
-      );
-      return response.json();
-    },
-  });
+  const { data = [], error } = useRoomsQuery();
 
   const [modalVisible, setModalVisible] = useState(false);
   const [sort, setSort] = useState<RoomFilters[]>([RoomFilters.Level]);
