@@ -7,7 +7,18 @@ import "../global.css";
 import { Link } from "expo-router";
 
 export default function Index() {
-  const [dateTime, setDateTime] = useState(new Date());
+  const [dateTime, setDateTime] = useState(() => {
+    const now = new Date();
+    return new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+      8,
+      0,
+      0,
+      0
+    );
+  });
 
   return (
     <ScrollView className="px-6 py-2 bg-white">
