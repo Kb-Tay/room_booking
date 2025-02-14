@@ -1,11 +1,10 @@
 import { Pressable, ScrollView, View, Text } from "react-native";
-import DateInput from "@/components/DateInput";
+import DateInput from "@/components/common/DateInput";
 import RoomList from "@/components/RoomList";
 import { useState } from "react";
-import SortingModal from "@/components/SortingModal";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 
 import "../global.css";
+import { Link } from "expo-router";
 
 export default function Index() {
   const [dateTime, setDateTime] = useState(new Date());
