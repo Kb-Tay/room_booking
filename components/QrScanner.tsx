@@ -26,7 +26,11 @@ export default function QrScanner() {
         <Text style={styles.message}>
           We need your permission to show the camera
         </Text>
-        <Button onPress={requestPermission} text="grant permission" />
+        <Button
+          className="bg-blue-400 text-black"
+          onPress={requestPermission}
+          text="grant permission"
+        />
       </View>
     );
   }
